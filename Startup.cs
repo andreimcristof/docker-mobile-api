@@ -13,6 +13,7 @@ namespace docker_mobile_api
 {
     public class Startup
     {
+        const string _title = "Docker Engine wrapper API";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -24,6 +25,12 @@ namespace docker_mobile_api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddSwaggerGen((c)=>{
+                c.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info{
+                    Title = _title,
+                    Version = "0.0.1"
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,6 +42,8 @@ namespace docker_mobile_api
             }
 
             app.UseMvc();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", _title));
         }
     }
 }

@@ -20,7 +20,7 @@ namespace docker_mobile_api.Controllers
         public async Task<IActionResult> GetDockerInfo()
         {
             var info = await this._dockerClient.System.GetVersionAsync();
-            return new ObjectResult(info);
+            return new JsonResult(info);
         }
     }
 }

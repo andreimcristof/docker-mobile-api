@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Docker.DotNet;
 
 namespace docker_mobile_api
 {
@@ -31,6 +32,11 @@ namespace docker_mobile_api
                     Version = "0.0.1"
                 });
             });
+            IDockerClient singletonDockerClient = new DockerClientConfiguration(
+                new Uri("unix:///var/run/docker.sock")
+                )
+                .CreateClient();
+            services.AddSingleton<IDockerClient>(singletonDockerClient);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,6 +48,11 @@ namespace docker_mobile_api
             }
 
             app.UseMvc();
+            SetupSwagger(app);
+        }
+
+        private static void SetupSwagger(IApplicationBuilder app)
+        {
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", _title));
         }
